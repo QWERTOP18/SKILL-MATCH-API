@@ -1,0 +1,27 @@
+# Python関連
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 環境設定・仮想環境関連
+.env
+*.env
+venv/
+.venv/
+Pipfile
+Pipfile.lock
+
+# IDE関連
+.vscode/
+.idea/
+*.iml
+
+# Docker関連
+*.log
+docker-compose.override.yml
+db.sqlite3
+*.db
+
+# Git関連
+.DS_Store

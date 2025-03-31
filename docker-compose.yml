@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app # ホストの現在のディレクトリをコンテナ内の/appにマウント
+    environment:
+      - DATABASE_URL=sqlite:///./test.db # 必要なら環境変数を設定
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # データベースサービス
+  # db:
+  #   image: nouchka/sqlite  # SQLite用の公式イメージがない場合はこの部分を省略
+  #   container_name: sqlite-db
+  #   volumes:
+  #     - sqlite-data:/db
+
+volumes:
+  sqlite-data: # データベース用のボリュームを設定（SQLiteのデータを保持したい場合）
+
