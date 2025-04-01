@@ -1,8 +1,23 @@
 import os
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, declarative_base, relationship
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from fastapi.middleware.cors import CORSMiddleware
+
+# models.py からインポート
+from models import Base, Question, Answer  # ここでmodelsをインポート
+
+# CORS設定
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"], 
+)
 
 # 環境変数からデータベースURLを取得（デフォルトは SQLite）
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
@@ -10,24 +25,6 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 # SQLAlchemyの設定
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# データモデル
-class Question(Base):
-    __tablename__ = 'questions'
-    id = Column(Integer, primary_key=True, index=True)
-    text = Column(String, index=True)
-    answers = relationship("Answer", back_populates="question")
-
-class Answer(Base):
-    __tablename__ = 'answers'
-    id = Column(Integer, primary_key=True, index=True)
-    text = Column(String, index=True)
-    question_id = Column(Integer, ForeignKey('questions.id'))
-    question = relationship("Question", back_populates="answers")
-
-# FastAPIの設定
-app = FastAPI()
 
 # Pydanticモデル
 class QuestionCreate(BaseModel):
