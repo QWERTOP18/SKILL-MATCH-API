@@ -12,14 +12,13 @@ docker exec -it fastapi-app /bin/sh
 
 ```mermaid
 erDiagram
-Project ||--o{ User : ""
-Project ||--o{ Project_User : ""
+Project }o--o{ User : ""
 User ||--o{ Task : ""
 User ||--o{ User_Badge : ""
 Badge ||--o{ User_Badge : ""
 Status ||--o{ Task : ""
 Project ||--o{ Task : ""
-Question ||--o{ Task : ""
+
 
     Project {
         int Project_id PK
@@ -28,11 +27,6 @@ Question ||--o{ Task : ""
         string deadline
     }
 
-    Project_User {
-        int id PK
-        int Project_id FK
-        int USER_id FK
-    }
 
     User {
         int USER_ID PK
