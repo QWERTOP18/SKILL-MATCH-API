@@ -11,6 +11,8 @@ class Task(Base):
     project_id = Column(Integer, ForeignKey("projects.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     # status_id = Column(Integer, ForeignKey("statuses.id"))
+    # color = Column(String)
+    # status = Column(String)
 
     # スキル評価
     technical_skill = Column(Integer, default=0)

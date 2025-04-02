@@ -20,7 +20,7 @@ async def get_tasks(
     limit: int = 100,
     user_id: Optional[int] = None,
     project_id: Optional[int] = None,
-    status_id: Optional[int] = None,
+    # status_id: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
     """タスク一覧を取得する（オプションのフィルタあり）"""
@@ -30,7 +30,7 @@ async def get_tasks(
         limit=limit, 
         user_id=user_id, 
         project_id=project_id,
-        status_id=status_id
+        # status_id=status_id
     )
     return tasks
 

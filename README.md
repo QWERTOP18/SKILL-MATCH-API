@@ -58,6 +58,8 @@ Status ||--|| Task : ""
         int Project_id FK
         string title
         string memo
+        string color
+        stiring status
         int technical_skill
         int problem_solving_ability
         int communication_skill

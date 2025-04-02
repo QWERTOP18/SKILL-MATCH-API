@@ -44,8 +44,8 @@ def get_tasks(
     skip: int = 0,
     limit: int = 100,
     user_id: Optional[int] = None,
-    project_id: Optional[int] = None,
-    status_id: Optional[int] = None
+    project_id: Optional[int] = None
+    # status_id: Optional[int] = None
 ) -> list[Task]:
     query = db.query(Task)
     

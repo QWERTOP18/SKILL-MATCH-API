@@ -6,7 +6,9 @@ class TaskBase(BaseModel):
     memo: Optional[str] = None
     project_id: int
     user_id: Optional[int] = None
-    status_id: Optional[int] = None
+    # color: str = "#FF5733"
+    # status:str = "未着手"
+    # status_id: Optional[int] = None
 
     # スキル評価フィールド
     technical_skill: int = Field(default=0, ge=0, le=5, description="技術スキルの評価 (0-5)")
@@ -28,7 +30,9 @@ class TaskUpdate(BaseModel):
     memo: Optional[str] = None
     project_id: Optional[int] = None
     user_id: Optional[int] = None
-    status_id: Optional[int] = None
+    # color: Optional[str] = None
+    # status: Optional[str] = None
+    # status_id: Optional[int] = None
 
     technical_skill: Optional[int] = Field(None, ge=0, le=5)
     problem_solving_ability: Optional[int] = Field(None, ge=0, le=5)
