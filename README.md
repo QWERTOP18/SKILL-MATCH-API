@@ -6,7 +6,11 @@ docker-compose up --build -d
 docker-compose down
 ```
 
-```
+```sh
+docker build -t fastapi-app .
+docker run -d -p 8000:8000 fastapi-app
+
+
 docker exec -it fastapi-app /bin/sh
 ```
 
@@ -15,16 +19,19 @@ erDiagram
 Project }o--o{ User : ""
 User ||--o{ Task : ""
 User ||--o{ User_Badge : ""
-Badge ||--o{ User_Badge : ""
-Status ||--o{ Task : ""
+Badge ||--|| User_Badge : ""
 Project ||--o{ Task : ""
+Status ||--|| Task : ""
 
 
     Project {
         int Project_id PK
+        string name
+        string memo
         string document
-        string duration
-        string deadline
+        string reference
+        date start
+        date deadline
     }
 
 
@@ -33,6 +40,7 @@ Project ||--o{ Task : ""
         int Project_ID FK
         string Name
         string Email
+        string reference
         int technical_skill
         int problem_solving_ability
         int communication_skill
@@ -48,6 +56,8 @@ Project ||--o{ Task : ""
         int USER_ID FK
         int STATUS FK
         int Project_id FK
+        string title
+        string memo
         int technical_skill
         int problem_solving_ability
         int communication_skill
@@ -55,6 +65,7 @@ Project ||--o{ Task : ""
         int leadership_and_collaboration
         int frontend_skill
         int backend_skill
+        int infrastructure_skill
     }
 
     Status {
