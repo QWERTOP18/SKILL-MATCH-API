@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.middleware.cors import CORSMiddleware
+from passlib.context import CryptContext
 
 # models.py からインポート
 from models import Base, Question, Answer  # ここでmodelsをインポート
@@ -47,6 +48,12 @@ def get_db():
 def startup():
     Base.metadata.create_all(bind=engine)
 
+#パスワードのハッシュ化設定
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+#パスワードをハッシュ化する関数
+def hash_password(password:ster):
+    return pwd_context.hash(password)
+
 # エンドポイント
 @app.post("/questions")
 async def create_question(question: QuestionCreate, db: SessionLocal = Depends(get_db)):
@@ -87,3 +94,21 @@ async def delete_answer(answer_id: int, db: SessionLocal = Depends(get_db)):
 @app.get("/answers")
 async def read_answers(db: SessionLocal = Depends(get_db)):
     return db.query(Answer).all()
+
+#ユーザーの追加
+@app.post("/users", response_model=UserRead)
+async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    hashed_password = get_password_hash(user.password)
+    db_user = User(username=user.username, password=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+#ユーザー詳細の取得
+@app.get("/users/{user_id}", response_model=UserRead)
+async def read_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
