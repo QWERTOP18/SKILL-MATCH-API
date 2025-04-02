@@ -2,14 +2,9 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+
+# questionsはDatabaseを使わないので、CRUD処理は不要　csvからデータを取得して返すだけにする
 @router.get("/")
 async def get_questions():
     return {"message": "List of questions"}
 
-@router.post("/")
-async def create_question(question: str):
-    return {"message": f"Question '{question}' created"}
-
-@router.get("/{question_id}")
-async def get_question(question_id: int):
-    return {"message": f"Details of question with id {question_id}"}

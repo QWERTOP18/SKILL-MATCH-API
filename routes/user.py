@@ -1,25 +1,33 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
 from schemas import user as schemas
-from models import user as models
+from crud import user as user_crud
 
 router = APIRouter()
 
-@router.post("/", response_model=schemas.UserResponse)
+@router.post("/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    new_user = models.User(username=user.username, email=user.email, hashed_password=user.password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    """新しいユーザーを作成する"""
+    return user_crud.create_user(db, user)
 
 @router.get("/{user_id}", response_model=schemas.UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.id == user_id).first()
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
+    """指定されたIDのユーザーを取得する"""
+    return user_crud.get_user(db, user_id)
+
+@router.put("/{user_id}", response_model=schemas.UserResponse)
+def update_user(user_id: int, user: schemas.UserUpdate, db: Session = Depends(get_db)):
+    """指定されたIDのユーザーを更新する"""
+    return user_crud.update_user(db, user_id, user)
+
+# @router.delete("/{user_id}", response_model=schemas.UserResponse)
+# def delete_user(user_id: int, db: Session = Depends(get_db)):
+#     """指定されたIDのユーザーを削除する"""
+#     return user_crud.delete_user(db, user_id)
+
+# @router.get("/", response_model=list[schemas.UserResponse])
+# def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     """ユーザー一覧を取得する"""
+#     users = db.query(models.User).offset(skip).limit(limit).all()
+#     return users
