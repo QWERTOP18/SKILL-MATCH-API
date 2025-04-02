@@ -10,7 +10,7 @@ class Task(Base):
     memo = Column(String)
     project_id = Column(Integer, ForeignKey("projects.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
-    status_id = Column(Integer, ForeignKey("statuses.id"))
+    # status_id = Column(Integer, ForeignKey("statuses.id"))
 
     # スキル評価
     technical_skill = Column(Integer, default=0)
