@@ -8,3 +8,4 @@ python-dotenv
 bcrypt
 alembic
 psycopg2-binary  # PostgreSQLを使う場合
+email-validator
