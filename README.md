@@ -6,7 +6,11 @@ docker-compose up --build -d
 docker-compose down
 ```
 
-```
+```sh
+docker build -t fastapi-app .
+docker run -d -p 8000:8000 fastapi-app
+
+
 docker exec -it fastapi-app /bin/sh
 ```
 
@@ -26,7 +30,7 @@ Status ||--|| Task : ""
         string memo
         string document
         string reference
-        date duration
+        date start
         date deadline
     }
 

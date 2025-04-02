@@ -1,89 +1,14 @@
-import os
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from routes import user, project, task
+from database import engine, Base
 
-# models.py からインポート
-from models import Base, Question, Answer  # ここでmodelsをインポート
+# DBテーブル作成
+Base.metadata.create_all(bind=engine)
 
-# CORS設定
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"], 
-)
+# ルーターの登録
+app.include_router(user.router, prefix="/users", tags=["users"])
+app.include_router(project.router, prefix="/projects", tags=["projects"])
+app.include_router(task.router, prefix="/tasks", tags=["tasks"])
 
-# 環境変数からデータベースURLを取得（デフォルトは SQLite）
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
-
-# SQLAlchemyの設定
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Pydanticモデル
-class QuestionCreate(BaseModel):
-    text: str
-
-class AnswerCreate(BaseModel):
-    text: str
-    question_id: int
-
-# データベースセッションを作成するユーティリティ関数
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# アプリ起動時にDBテーブルを作成
-@app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
-
-# エンドポイント
-@app.post("/questions")
-async def create_question(question: QuestionCreate, db: SessionLocal = Depends(get_db)):
-    db_question = Question(text=question.text)
-    db.add(db_question)
-    db.commit()
-    db.refresh(db_question)
-    return db_question
-
-@app.get("/questions")
-async def read_questions(db: SessionLocal = Depends(get_db)):
-    return db.query(Question).all()
-
-# @app.get("/questions/{question_id}")
-# async def read_question(question_id: int, db: SessionLocal = Depends(get_db)):
-#     db_question = db.query(Question).filter(Question.id == question_id).first()
-#     if db_question is None:
-#         raise HTTPException(status_code=404, detail="Question not found")
-#     return db_question
-
-# @app.post("/answers")
-# async def create_answer(answer: AnswerCreate, db: SessionLocal = Depends(get_db)):
-#     db_answer = Answer(text=answer.text, question_id=answer.question_id)
-#     db.add(db_answer)
-#     db.commit()
-#     db.refresh(db_answer)
-#     return db_answer
-
-# @app.delete("/answers/{answer_id}")
-# async def delete_answer(answer_id: int, db: SessionLocal = Depends(get_db)):
-#     db_answer = db.query(Answer).filter(Answer.id == answer_id).first()
-#     if db_answer is None:
-#         raise HTTPException(status_code=404, detail="Answer not found")
-#     db.delete(db_answer)
-#     db.commit()
-#     return {"detail": "Answer deleted"}
-
-# @app.get("/answers")
-# async def read_answers(db: SessionLocal = Depends(get_db)):
-#     return db.query(Answer).all()
