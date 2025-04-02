@@ -60,30 +60,30 @@ async def create_question(question: QuestionCreate, db: SessionLocal = Depends(g
 async def read_questions(db: SessionLocal = Depends(get_db)):
     return db.query(Question).all()
 
-@app.get("/questions/{question_id}")
-async def read_question(question_id: int, db: SessionLocal = Depends(get_db)):
-    db_question = db.query(Question).filter(Question.id == question_id).first()
-    if db_question is None:
-        raise HTTPException(status_code=404, detail="Question not found")
-    return db_question
+# @app.get("/questions/{question_id}")
+# async def read_question(question_id: int, db: SessionLocal = Depends(get_db)):
+#     db_question = db.query(Question).filter(Question.id == question_id).first()
+#     if db_question is None:
+#         raise HTTPException(status_code=404, detail="Question not found")
+#     return db_question
 
-@app.post("/answers")
-async def create_answer(answer: AnswerCreate, db: SessionLocal = Depends(get_db)):
-    db_answer = Answer(text=answer.text, question_id=answer.question_id)
-    db.add(db_answer)
-    db.commit()
-    db.refresh(db_answer)
-    return db_answer
+# @app.post("/answers")
+# async def create_answer(answer: AnswerCreate, db: SessionLocal = Depends(get_db)):
+#     db_answer = Answer(text=answer.text, question_id=answer.question_id)
+#     db.add(db_answer)
+#     db.commit()
+#     db.refresh(db_answer)
+#     return db_answer
 
-@app.delete("/answers/{answer_id}")
-async def delete_answer(answer_id: int, db: SessionLocal = Depends(get_db)):
-    db_answer = db.query(Answer).filter(Answer.id == answer_id).first()
-    if db_answer is None:
-        raise HTTPException(status_code=404, detail="Answer not found")
-    db.delete(db_answer)
-    db.commit()
-    return {"detail": "Answer deleted"}
+# @app.delete("/answers/{answer_id}")
+# async def delete_answer(answer_id: int, db: SessionLocal = Depends(get_db)):
+#     db_answer = db.query(Answer).filter(Answer.id == answer_id).first()
+#     if db_answer is None:
+#         raise HTTPException(status_code=404, detail="Answer not found")
+#     db.delete(db_answer)
+#     db.commit()
+#     return {"detail": "Answer deleted"}
 
-@app.get("/answers")
-async def read_answers(db: SessionLocal = Depends(get_db)):
-    return db.query(Answer).all()
+# @app.get("/answers")
+# async def read_answers(db: SessionLocal = Depends(get_db)):
+#     return db.query(Answer).all()
